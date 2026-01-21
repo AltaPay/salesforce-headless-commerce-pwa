@@ -1,8 +1,8 @@
 {
   "name": "client",
-  "hash": "4b8a59e70ce6b8f94aba",
+  "hash": "0dd9f39b2a1c85e4aec6",
   "publicPath": "/mobify/bundle/development/",
-  "outputPath": "/Users/shahbazanjum/GitHub/plugin-salesforce/cartridges/marketpay-retail-react-app/build",
+  "outputPath": "/Users/shahbazanjum/GitHub/salesforce-headless-commerce-pwa/packages/marketpay-retail-react-app/build",
   "assetsByChunkName": {
     "main": [
       "main.js",
@@ -108,7 +108,7 @@
     {
       "type": "asset",
       "name": "main.js",
-      "size": 1797798,
+      "size": 1797925,
       "emitted": false,
       "comparedForEmit": false,
       "cached": true,
@@ -132,20 +132,18 @@
     },
     {
       "type": "asset",
-      "name": "pages-checkout.js",
-      "size": 343040,
+      "name": "vendors-node_modules_salesforce_retail-react-app_app_components_forms_credit-card-fields_jsx--aa48b6.js",
+      "size": 306159,
       "emitted": false,
       "comparedForEmit": false,
       "cached": true,
       "info": {
         "javascriptModule": false,
         "related": {
-          "sourceMap": "pages-checkout.js.map"
+          "sourceMap": "vendors-node_modules_salesforce_retail-react-app_app_components_forms_credit-card-fields_jsx--aa48b6.js.map"
         }
       },
-      "chunkNames": [
-        "pages-checkout"
-      ],
+      "chunkNames": [],
       "chunkIdHints": [
         "vendors"
       ],
@@ -153,7 +151,7 @@
       "auxiliaryChunkIdHints": [],
       "filteredRelated": 1,
       "chunks": [
-        "pages-checkout"
+        "vendors-node_modules_salesforce_retail-react-app_app_components_forms_credit-card-fields_jsx--aa48b6"
       ],
       "auxiliaryChunks": []
     },
@@ -366,6 +364,31 @@
       "filteredRelated": 1,
       "chunks": [
         "pages-account-wishlist"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "pages-checkout.js",
+      "size": 50406,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "pages-checkout.js.map"
+        }
+      },
+      "chunkNames": [
+        "pages-checkout"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "pages-checkout"
       ],
       "auxiliaryChunks": []
     },
@@ -974,6 +997,7 @@
         "vendors-node_modules_salesforce_retail-react-app_app_hooks_use-multiship_js",
         "vendors-node_modules_salesforce_retail-react-app_app_components_order-summary_index_jsx",
         "vendors-node_modules_salesforce_retail-react-app_app_components_action-card_index_jsx-node_mo-cf7e9f",
+        "vendors-node_modules_salesforce_retail-react-app_app_components_forms_credit-card-fields_jsx--aa48b6",
         "pages-checkout"
       ],
       "assets": [
@@ -996,12 +1020,15 @@
           "name": "vendors-node_modules_salesforce_retail-react-app_app_components_action-card_index_jsx-node_mo-cf7e9f.js"
         },
         {
+          "name": "vendors-node_modules_salesforce_retail-react-app_app_components_forms_credit-card-fields_jsx--aa48b6.js"
+        },
+        {
           "name": "pages-checkout.js"
         }
       ],
       "filteredAssets": 0,
       "assetsSize": null,
-      "filteredAuxiliaryAssets": 7,
+      "filteredAuxiliaryAssets": 8,
       "auxiliaryAssetsSize": null,
       "children": {},
       "childAssets": {}
@@ -1319,6 +1346,12 @@
       "id": "vendors-node_modules_salesforce_retail-react-app_app_components_action-card_index_jsx-node_mo-cf7e9f",
       "files": [
         "vendors-node_modules_salesforce_retail-react-app_app_components_action-card_index_jsx-node_mo-cf7e9f.js"
+      ]
+    },
+    {
+      "id": "vendors-node_modules_salesforce_retail-react-app_app_components_forms_credit-card-fields_jsx--aa48b6",
+      "files": [
+        "vendors-node_modules_salesforce_retail-react-app_app_components_forms_credit-card-fields_jsx--aa48b6.js"
       ]
     },
     {

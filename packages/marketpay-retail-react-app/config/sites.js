@@ -11,14 +11,14 @@ module.exports = [
     {
         id: 'RefArchGlobal',
         l10n: {
-            supportedCurrencies: ['USD'],
-            defaultCurrency: 'USD',
-            defaultLocale: 'en-US',
+            supportedCurrencies: ['GBP'],
+            defaultCurrency: 'GBP',
+            defaultLocale: 'en-GB',
             supportedLocales: [
                 {
-                    id: 'en-US',
+                    id: 'en-GB',
                     // alias: 'us',
-                    preferredCurrency: 'USD'
+                    preferredCurrency: 'GBP'
                 }
             ]
         }
