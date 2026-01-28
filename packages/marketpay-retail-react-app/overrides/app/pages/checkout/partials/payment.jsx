@@ -19,7 +19,7 @@ import {
 } from '@salesforce/retail-react-app/app/components/shared/ui'
 import {useForm} from 'react-hook-form'
 import {useToast} from '@salesforce/retail-react-app/app/hooks/use-toast'
-import {useShopperBasketsMutation} from '@salesforce/commerce-sdk-react'
+import {useShopperBasketsMutation, useShopperOrdersMutation} from '@salesforce/commerce-sdk-react'
 import {useCurrentBasket} from '@salesforce/retail-react-app/app/hooks/use-current-basket'
 import {useCheckout} from '@salesforce/retail-react-app/app/pages/checkout/util/checkout-context'
 import {
@@ -60,6 +60,7 @@ const Payment = () => {
 
     // Track selected payment method from PaymentForm
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null)
+    const [isMarketPaySubmitting, setIsMarketPaySubmitting] = useState(false)
 
     useEffect(() => {
         if (isPickupOnly) {
@@ -76,6 +77,7 @@ const Payment = () => {
     const {mutateAsync: removePaymentInstrumentFromBasket} = useShopperBasketsMutation(
         'removePaymentInstrumentFromBasket'
     )
+    const {mutateAsync: createOrder} = useShopperOrdersMutation('createOrder')
     const showToast = useToast()
     const showError = () => {
         showToast({
@@ -113,24 +115,48 @@ const Payment = () => {
             paymentMethodId: paymentMethod.id,
             c_marketPayToken: marketPayData.access_token || '',
             c_marketPaySessionID: marketPayData.sessionId || '',
-            c_marketpayPaymentMethodID: marketPayData.paymentMethod?.id || ''
+            c_marketPayPaymentMethodID: marketPayData.paymentMethod?.id || '',
+            c_marketPayOnInitiatePaymentURL: marketPayData.paymentMethod.onInitiatePayment?.value || ''
         }
+
+        console.log("Payment Instrument request: @", JSON.stringify(paymentInstrument));
 
         const response = await addPaymentInstrumentToBasket({
             parameters: {basketId: basket?.basketId},
             body: paymentInstrument
         })
 
+        console.log("Payment Instrument response: @", JSON.stringify(response));
+
         // Check for redirect in response
         const marketPayResponse = response?.paymentInstruments?.[0]?.c_marketPay
+
+        console.log("**** marketPayResponse: ", JSON.stringify(marketPayResponse));
+
         if (marketPayResponse?.type === 'REDIRECT' && marketPayResponse?.url) {
             // Store order info for return handling
             sessionStorage.setItem('marketpay_payment_id', marketPayResponse.paymentId)
             sessionStorage.setItem('marketpay_shop_order_id', marketPayResponse.shopOrderId)
 
+            console.log("**** Should redirect here ****");
+
+            /*
+            // Create order without payment before redirecting to payment gateway
+            const order = await createOrder({
+                body: {
+                    basketId: basket?.basketId
+                }
+            })
+            console.log("**** Order created: ", JSON.stringify(order));
+
+            // Store order number for return handling
+            sessionStorage.setItem('marketpay_order_no', order?.orderNo)
+            
+
             // Redirect to payment gateway
             window.location.href = marketPayResponse.url
             return null // Prevent further processing
+            */
         }
 
         return response
@@ -157,13 +183,6 @@ const Payment = () => {
             parameters: {basketId: basket?.basketId},
             body: paymentInstrument
         })
-    }
-
-    const onPaymentSubmit = async (formValue) => {
-        if (isMarketPayMethod(selectedPaymentMethod?.id)) {
-            return onMarketPaySubmit(selectedPaymentMethod)
-        }
-        return onCreditCardSubmit(formValue)
     }
 
     const onBillingSubmit = async () => {
@@ -200,6 +219,7 @@ const Payment = () => {
     const onSubmit = async () => {
         // For MarketPay, skip form validation since there are no form fields
         if (isMarketPayMethod(selectedPaymentMethod?.id)) {
+            setIsMarketPaySubmitting(true)
             if (!appliedPayment) {
                 try {
                     const paymentResult = await onMarketPaySubmit(selectedPaymentMethod)
@@ -208,12 +228,14 @@ const Payment = () => {
                         return
                     }
                 } catch (error) {
+                    setIsMarketPaySubmitting(false)
                     showError()
                     return
                 }
             }
 
             const updatedBasket = await onBillingSubmit()
+            setIsMarketPaySubmitting(false)
             if (updatedBasket) {
                 goToNextStep()
             }
@@ -262,6 +284,7 @@ const Payment = () => {
             title={formatMessage({defaultMessage: 'Payment', id: 'checkout_payment.title.payment'})}
             editing={step === STEPS.PAYMENT}
             isLoading={
+                isMarketPaySubmitting ||
                 paymentMethodForm.formState.isSubmitting ||
                 billingAddressForm.formState.isSubmitting
             }
