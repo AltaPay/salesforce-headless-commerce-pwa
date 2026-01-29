@@ -90,11 +90,6 @@ const Checkout = () => {
     const submitOrder = async () => {
         setIsLoading(true)
         try {
-
-            console.log("*****MarketPay BasketResponse: ",JSON.stringify(basket));
-
-            console.log("********Basket PaymentInstrument Data", JSON.stringify(basket?.paymentInstruments?.[0]));
-
             const order = await createOrder({
                 body: {basketId: basket.basketId}
             })
