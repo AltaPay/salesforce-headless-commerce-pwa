@@ -59,7 +59,7 @@ const PaymentForm = ({form, onPaymentMethodSelect}) => {
             return
         }
         // Default to first MarketPay method if available, otherwise first method
-        const marketPayMethod = paymentMethods.find((m) => isMarketPayMethod(m.id))
+        const marketPayMethod = paymentMethods.find((m) => isMarketPayMethod(m.paymentProcessorId))
         const defaultMethod = marketPayMethod || paymentMethods[0]
         setSelectedPaymentMethodId(defaultMethod.id)
     }, [paymentMethods])
