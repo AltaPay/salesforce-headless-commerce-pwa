@@ -671,12 +671,6 @@
       "value": "Scroll carousel right"
     }
   ],
-  "cart.info.removed_from_cart": [
-    {
-      "type": 0,
-      "value": "Item removed from cart"
-    }
-  ],
   "cart.order_type.delivery": [
     {
       "type": 0,
@@ -1181,6 +1175,12 @@
       "value": "Same as shipping address"
     }
   ],
+  "checkout_payment.message.marketpay_selected": [
+    {
+      "type": 0,
+      "value": "Payment method selected"
+    }
+  ],
   "checkout_payment.title.payment": [
     {
       "type": 0,
@@ -1247,12 +1247,6 @@
       "value": "No, keep item"
     }
   ],
-  "confirmation_modal.remove_cart_item.action.remove": [
-    {
-      "type": 0,
-      "value": "Remove"
-    }
-  ],
   "confirmation_modal.remove_cart_item.action.yes": [
     {
       "type": 0,
@@ -1265,22 +1259,10 @@
       "value": "No, keep item"
     }
   ],
-  "confirmation_modal.remove_cart_item.assistive_msg.remove": [
-    {
-      "type": 0,
-      "value": "Remove unavailable products"
-    }
-  ],
   "confirmation_modal.remove_cart_item.assistive_msg.yes": [
     {
       "type": 0,
       "value": "Yes, remove item"
-    }
-  ],
-  "confirmation_modal.remove_cart_item.message.need_to_remove_due_to_unavailability": [
-    {
-      "type": 0,
-      "value": "Some items are no longer available online and will be removed from your cart."
     }
   ],
   "confirmation_modal.remove_cart_item.message.sure_to_remove": [
@@ -1293,12 +1275,6 @@
     {
       "type": 0,
       "value": "Confirm Remove Item"
-    }
-  ],
-  "confirmation_modal.remove_cart_item.title.items_unavailable": [
-    {
-      "type": 0,
-      "value": "Items Unavailable"
     }
   ],
   "confirmation_modal.remove_wishlist_item.action.no": [
@@ -1863,86 +1839,6 @@
       "value": "Wishlist"
     }
   ],
-  "global.error.feature_unavailable": [
-    {
-      "type": 0,
-      "value": "This feature is not currently available."
-    }
-  ],
-  "global.error.invalid_token": [
-    {
-      "type": 0,
-      "value": "Invalid token, please try again."
-    }
-  ],
-  "global.error.something_went_wrong": [
-    {
-      "type": 0,
-      "value": "Something went wrong. Try again!"
-    }
-  ],
-  "global.info.added_to_wishlist": [
-    {
-      "type": 1,
-      "value": "quantity"
-    },
-    {
-      "type": 0,
-      "value": " "
-    },
-    {
-      "offset": 0,
-      "options": {
-        "one": {
-          "value": [
-            {
-              "type": 0,
-              "value": "item"
-            }
-          ]
-        },
-        "other": {
-          "value": [
-            {
-              "type": 0,
-              "value": "items"
-            }
-          ]
-        }
-      },
-      "pluralType": "cardinal",
-      "type": 6,
-      "value": "quantity"
-    },
-    {
-      "type": 0,
-      "value": " added to wishlist"
-    }
-  ],
-  "global.info.already_in_wishlist": [
-    {
-      "type": 0,
-      "value": "Item is already in wishlist"
-    }
-  ],
-  "global.info.removed_from_wishlist": [
-    {
-      "type": 0,
-      "value": "Item removed from wishlist"
-    }
-  ],
-  "global.info.store_insufficient_inventory": [
-    {
-      "type": 0,
-      "value": "Some items aren't available for pickup at this store."
-    }
-  ],
-  "global.link.added_to_wishlist.view_wishlist": [
-    {
-      "type": 0,
-      "value": "View"
-    }
-  ],
   "header.button.assistive_msg.logo": [
     {
       "type": 0,
@@ -2011,24 +1907,6 @@
     {
       "type": 0,
       "value": "My Account"
-    }
-  ],
-  "home.description.features": [
-    {
-      "type": 0,
-      "value": "Out-of-the-box features so that you focus only on adding enhancements."
-    }
-  ],
-  "home.description.here_to_help": [
-    {
-      "type": 0,
-      "value": "Contact our support staff."
-    }
-  ],
-  "home.description.here_to_help_line_2": [
-    {
-      "type": 0,
-      "value": "They will get you to the right place."
     }
   ],
   "home.description.shop_products": [
@@ -2117,18 +1995,6 @@
       "value": "Wishlist"
     }
   ],
-  "home.heading.features": [
-    {
-      "type": 0,
-      "value": "Features"
-    }
-  ],
-  "home.heading.here_to_help": [
-    {
-      "type": 0,
-      "value": "We're here to help"
-    }
-  ],
   "home.heading.shop_products": [
     {
       "type": 0,
@@ -2153,12 +2019,6 @@
       "value": "Deploy on Managed Runtime"
     }
   ],
-  "home.link.contact_us": [
-    {
-      "type": 0,
-      "value": "Contact Us"
-    }
-  ],
   "home.link.get_started": [
     {
       "type": 0,
@@ -2169,18 +2029,6 @@
     {
       "type": 0,
       "value": "Read docs"
-    }
-  ],
-  "home.title.home": [
-    {
-      "type": 0,
-      "value": "Home"
-    }
-  ],
-  "home.title.react_starter_store": [
-    {
-      "type": 0,
-      "value": "The React PWA Starter Store for Retail"
     }
   ],
   "icons.assistive_msg.lock": [
@@ -2951,10 +2799,16 @@
       "value": "Password Reset Success"
     }
   ],
-  "payment_selection.heading.credit_card": [
+  "payment_selection.message.marketpay_redirect": [
     {
       "type": 0,
-      "value": "Credit Card"
+      "value": "You will be redirected to complete your payment securely."
+    }
+  ],
+  "payment_selection.message.no_methods": [
+    {
+      "type": 0,
+      "value": "No payment methods available"
     }
   ],
   "payment_selection.radio_group.assistive_msg": [
@@ -3255,18 +3109,6 @@
     {
       "type": 0,
       "value": " from wishlist"
-    }
-  ],
-  "product_tile.badge.label.new": [
-    {
-      "type": 0,
-      "value": "New"
-    }
-  ],
-  "product_tile.badge.label.sale": [
-    {
-      "type": 0,
-      "value": "Sale"
     }
   ],
   "product_view.button.add_bundle_to_cart": [
