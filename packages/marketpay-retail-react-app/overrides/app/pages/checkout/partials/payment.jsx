@@ -40,8 +40,6 @@ import {PromoCode, usePromoCode} from '@salesforce/retail-react-app/app/componen
 import {API_ERROR_MESSAGE} from '@salesforce/retail-react-app/app/constants'
 import {isPickupShipment} from '@salesforce/retail-react-app/app/utils/shipment-utils'
 
-console.log('*** PAYMENT.JSX OVERRIDE LOADED ***')
-
 const Payment = () => {
     const {formatMessage} = useIntl()
     const {data: basket} = useCurrentBasket()
