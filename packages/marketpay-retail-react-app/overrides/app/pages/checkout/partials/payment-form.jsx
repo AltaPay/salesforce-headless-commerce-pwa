@@ -44,8 +44,8 @@ const PaymentForm = ({form, onPaymentMethodSelect}) => {
     const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('')
 
     // Helper to check if a payment method is MarketPay
-    const isMarketPayMethod = (methodId) => {
-        return methodId?.startsWith('MARKETPAY_')
+    const isMarketPayMethod = (paymentProcessorId) => {
+        return paymentProcessorId === 'MARKETPAY'
     }
 
     // Helper to check if a payment method requires credit card form
@@ -97,7 +97,7 @@ const PaymentForm = ({form, onPaymentMethodSelect}) => {
                                 name="payment-selection"
                             >
                                 {paymentMethods.map((method, index) => {
-                                    const isMarketPay = isMarketPayMethod(method.id)
+                                    const isMarketPay = isMarketPayMethod(method.paymentProcessorId)
                                     const needsCreditCardForm = requiresCreditCardForm(method.id)
                                     const isSelected = selectedPaymentMethodId === method.id
 
