@@ -44,8 +44,6 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {useMultiship} from '@salesforce/retail-react-app/app/hooks/use-multiship'
 import {GoogleAPIProvider} from '@salesforce/retail-react-app/app/pages/checkout/util/google-api-provider'
 
-console.log('*** CHECKOUT INDEX.JSX OVERRIDE LOADED ***')
-
 const Checkout = () => {
     const {formatMessage} = useIntl()
     const navigate = useNavigation()
