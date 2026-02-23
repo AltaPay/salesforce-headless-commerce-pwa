@@ -90,23 +90,10 @@ const Checkout = () => {
     const submitOrder = async () => {
         setIsLoading(true)
         try {
-
-            console.log("*****MarketPay BasketResponse: ",JSON.stringify(basket));
-
-            console.log("********Basket PaymentInstrument Data", JSON.stringify(basket?.paymentInstruments?.[0]));
-
             const order = await createOrder({
                 body: {basketId: basket.basketId}
             })
-
-            console.log("****************Order**", JSON.stringify(order));
-
-            const marketPayPaymentURL = order?.paymentInstruments?.[0]?.c_marketPayPaymentURL
-            if (marketPayPaymentURL) {
-                window.location.href = marketPayPaymentURL
-            } else {
-                navigate(`/checkout/confirmation/${order.orderNo}`)
-            }
+            navigate(`/checkout/confirmation/${order.orderNo}`)
         } catch (error) {
             const message = formatMessage({
                 id: 'checkout.message.generic_error',

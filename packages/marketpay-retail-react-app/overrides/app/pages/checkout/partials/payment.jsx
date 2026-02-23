@@ -113,7 +113,10 @@ const Payment = () => {
         const paymentInstrument = {
             amount: basket?.orderTotal,
             paymentMethodId: paymentMethod.id,
-            c_marketPayPaymentMethodID: marketPayData.paymentMethod?.id || ''
+            c_marketPayToken: marketPayData.access_token || '',
+            c_marketPaySessionID: marketPayData.sessionId || '',
+            c_marketPayPaymentMethodID: marketPayData.paymentMethod?.id || '',
+            c_marketPayOnInitiatePaymentURL: marketPayData.paymentMethod.onInitiatePayment?.value || ''
         }
 
         console.log("Payment Instrument request: @", JSON.stringify(paymentInstrument));
@@ -124,6 +127,37 @@ const Payment = () => {
         })
 
         console.log("Payment Instrument response: @", JSON.stringify(response));
+
+        // Check for redirect in response
+        const marketPayResponse = response?.paymentInstruments?.[0]?.c_marketPay
+
+        console.log("**** marketPayResponse: ", JSON.stringify(marketPayResponse));
+
+        if (marketPayResponse?.type === 'REDIRECT' && marketPayResponse?.url) {
+            // Store order info for return handling
+            sessionStorage.setItem('marketpay_payment_id', marketPayResponse.paymentId)
+            sessionStorage.setItem('marketpay_shop_order_id', marketPayResponse.shopOrderId)
+
+            console.log("**** Should redirect here ****");
+
+            /*
+            // Create order without payment before redirecting to payment gateway
+            const order = await createOrder({
+                body: {
+                    basketId: basket?.basketId
+                }
+            })
+            console.log("**** Order created: ", JSON.stringify(order));
+
+            // Store order number for return handling
+            sessionStorage.setItem('marketpay_order_no', order?.orderNo)
+            
+
+            // Redirect to payment gateway
+            window.location.href = marketPayResponse.url
+            return null // Prevent further processing
+            */
+        }
 
         return response
     }
@@ -182,7 +216,7 @@ const Payment = () => {
         }
     }
 
-    const onSubmit = async (paymentFormValues) => {
+    const onSubmit = async () => {
         // For MarketPay, skip form validation since there are no form fields
         if (isMarketPayMethod(selectedPaymentMethod?.id)) {
             setIsMarketPaySubmitting(true)
@@ -208,20 +242,22 @@ const Payment = () => {
             return
         }
 
-        // For credit card, use form values from parameter
-        if (!appliedPayment) {
-            try {
-                await onCreditCardSubmit(paymentFormValues)
-            } catch (error) {
-                showError()
-                return
+        // For credit card, use form validation
+        paymentMethodForm.handleSubmit(async (paymentFormValues) => {
+            if (!appliedPayment) {
+                try {
+                    await onCreditCardSubmit(paymentFormValues)
+                } catch (error) {
+                    showError()
+                    return
+                }
             }
-        }
 
-        const updatedBasket = await onBillingSubmit()
-        if (updatedBasket) {
-            goToNextStep()
-        }
+            const updatedBasket = await onBillingSubmit()
+            if (updatedBasket) {
+                goToNextStep()
+            }
+        })()
     }
 
     // Callback for payment method selection from PaymentForm
@@ -269,7 +305,6 @@ const Payment = () => {
                         <PaymentForm
                             form={paymentMethodForm}
                             onPaymentMethodSelect={handlePaymentMethodSelect}
-                            onSubmit={onSubmit}
                         />
                     ) : appliedPayment?.paymentCard ? (
                         <Stack spacing={3}>
@@ -366,7 +401,7 @@ const Payment = () => {
 
                     <Box pt={3}>
                         <Container variant="form">
-                            <Button w="full" onClick={paymentMethodForm.handleSubmit(onSubmit)}>
+                            <Button w="full" onClick={onSubmit}>
                                 <FormattedMessage
                                     defaultMessage="Review Order"
                                     id="checkout_payment.button.review_order"

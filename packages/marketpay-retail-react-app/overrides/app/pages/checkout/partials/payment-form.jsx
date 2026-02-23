@@ -23,7 +23,7 @@ import {LockIcon} from '@salesforce/retail-react-app/app/components/icons'
 import CreditCardFields from '@salesforce/retail-react-app/app/components/forms/credit-card-fields'
 import {useCurrency} from '@salesforce/retail-react-app/app/hooks'
 
-const PaymentForm = ({form, onPaymentMethodSelect, onSubmit}) => {
+const PaymentForm = ({form, onPaymentMethodSelect}) => {
     const {formatMessage} = useIntl()
     const {data: basket} = useCurrentBasket()
     const {currency} = useCurrency()
@@ -39,7 +39,6 @@ const PaymentForm = ({form, onPaymentMethodSelect, onSubmit}) => {
     )
 
     const paymentMethods = paymentMethodsData?.applicablePaymentMethods || []
-
     // Track selected payment method
     const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('')
 
@@ -56,13 +55,14 @@ const PaymentForm = ({form, onPaymentMethodSelect, onSubmit}) => {
 
     // Set default payment method when data loads
     useEffect(() => {
-        if (paymentMethods.length > 0 && !selectedPaymentMethodId) {
-            // Default to first MarketPay method if available, otherwise first method
-            const marketPayMethod = paymentMethods.find((m) => isMarketPayMethod(m.id))
-            const defaultMethod = marketPayMethod || paymentMethods[0]
-            setSelectedPaymentMethodId(defaultMethod.id)
+        if (!paymentMethods.length || selectedPaymentMethodId) {
+            return
         }
-    }, [paymentMethods, selectedPaymentMethodId])
+        // Default to first MarketPay method if available, otherwise first method
+        const marketPayMethod = paymentMethods.find((m) => isMarketPayMethod(m.id))
+        const defaultMethod = marketPayMethod || paymentMethods[0]
+        setSelectedPaymentMethodId(defaultMethod.id)
+    }, [paymentMethods])
 
     // Notify parent when payment method changes
     useEffect(() => {
@@ -77,7 +77,7 @@ const PaymentForm = ({form, onPaymentMethodSelect, onSubmit}) => {
     }
 
     return (
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(() => {})}>
             <Stack spacing={8}>
                 <Stack spacing={5}>
                     <Box border="1px solid" borderColor="gray.100" rounded="base" overflow="hidden">
@@ -193,10 +193,7 @@ PaymentForm.propTypes = {
     form: PropTypes.object,
 
     /** Callback when payment method is selected - receives the full payment method object */
-    onPaymentMethodSelect: PropTypes.func,
-
-    /** Callback when form is submitted - receives form values */
-    onSubmit: PropTypes.func
+    onPaymentMethodSelect: PropTypes.func
 }
 
 export default PaymentForm
