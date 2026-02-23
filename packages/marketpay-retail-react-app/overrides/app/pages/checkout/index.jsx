@@ -44,8 +44,6 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {useMultiship} from '@salesforce/retail-react-app/app/hooks/use-multiship'
 import {GoogleAPIProvider} from '@salesforce/retail-react-app/app/pages/checkout/util/google-api-provider'
 
-console.log('*** CHECKOUT INDEX.JSX OVERRIDE LOADED ***')
-
 const Checkout = () => {
     const {formatMessage} = useIntl()
     const navigate = useNavigation()
@@ -91,15 +89,9 @@ const Checkout = () => {
         setIsLoading(true)
         try {
 
-            console.log("*****MarketPay BasketResponse: ",JSON.stringify(basket));
-
-            console.log("********Basket PaymentInstrument Data", JSON.stringify(basket?.paymentInstruments?.[0]));
-
             const order = await createOrder({
                 body: {basketId: basket.basketId}
             })
-
-            console.log("****************Order**", JSON.stringify(order));
 
             const marketPayPaymentURL = order?.paymentInstruments?.[0]?.c_marketPayPaymentURL
             if (marketPayPaymentURL) {
