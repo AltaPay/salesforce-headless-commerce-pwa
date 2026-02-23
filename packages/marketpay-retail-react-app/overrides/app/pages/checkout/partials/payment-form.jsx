@@ -44,8 +44,8 @@ const PaymentForm = ({form, onPaymentMethodSelect, onSubmit}) => {
     const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('')
 
     // Helper to check if a payment method is MarketPay
-    const isMarketPayMethod = (methodId) => {
-        return methodId?.startsWith('MARKETPAY_')
+    const isMarketPayMethod = (paymentProcessorId) => {
+        return paymentProcessorId === 'MARKETPAY'
     }
 
     // Helper to check if a payment method requires credit card form
@@ -62,7 +62,11 @@ const PaymentForm = ({form, onPaymentMethodSelect, onSubmit}) => {
             const defaultMethod = marketPayMethod || paymentMethods[0]
             setSelectedPaymentMethodId(defaultMethod.id)
         }
-    }, [paymentMethods, selectedPaymentMethodId])
+        // Default to first MarketPay method if available, otherwise first method
+        const marketPayMethod = paymentMethods.find((m) => isMarketPayMethod(m.paymentProcessorId))
+        const defaultMethod = marketPayMethod || paymentMethods[0]
+        setSelectedPaymentMethodId(defaultMethod.id)
+    }, [paymentMethods])
 
     // Notify parent when payment method changes
     useEffect(() => {
@@ -97,7 +101,7 @@ const PaymentForm = ({form, onPaymentMethodSelect, onSubmit}) => {
                                 name="payment-selection"
                             >
                                 {paymentMethods.map((method, index) => {
-                                    const isMarketPay = isMarketPayMethod(method.id)
+                                    const isMarketPay = isMarketPayMethod(method.paymentProcessorId)
                                     const needsCreditCardForm = requiresCreditCardForm(method.id)
                                     const isSelected = selectedPaymentMethodId === method.id
 

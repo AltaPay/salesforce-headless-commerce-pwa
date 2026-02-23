@@ -99,8 +99,8 @@ const Payment = () => {
     const paymentMethodForm = useForm()
 
     // Helper to check if payment method is MarketPay
-    const isMarketPayMethod = (methodId) => {
-        return methodId?.startsWith('MARKETPAY_')
+    const isMarketPayMethod = (paymentProcessorId) => {
+        return paymentProcessorId === 'MARKETPAY'
     }
 
     // Handle MarketPay payment submission
@@ -144,7 +144,12 @@ const Payment = () => {
             body: paymentInstrument
         })
     }
-
+    const onPaymentSubmit = async (formValue) => {
+        if (isMarketPayMethod(selectedPaymentMethod?.paymentProcessorId)) {
+            return onMarketPaySubmit(selectedPaymentMethod)
+        }
+        return onCreditCardSubmit(formValue)
+    }
     const onBillingSubmit = async () => {
         const isFormValid = await billingAddressForm.trigger()
 
@@ -178,7 +183,7 @@ const Payment = () => {
 
     const onSubmit = async (paymentFormValues) => {
         // For MarketPay, skip form validation since there are no form fields
-        if (isMarketPayMethod(selectedPaymentMethod?.id)) {
+        if (isMarketPayMethod(selectedPaymentMethod?.paymentProcessorId)) {
             setIsMarketPaySubmitting(true)
             if (!appliedPayment) {
                 try {
@@ -230,7 +235,7 @@ const Payment = () => {
 
     // Determine payment summary heading based on applied payment type
     const getPaymentHeading = () => {
-        if (appliedPayment && isMarketPayMethod(appliedPayment.paymentMethodId)) {
+        if (appliedPayment && appliedPayment.paymentMethodId.includes('MARKETPAY')) {
             return appliedPayment.paymentMethodId.replace('MARKETPAY_', '').replace('_', ' ')
         }
         return formatMessage({defaultMessage: 'Credit Card', id: 'checkout_payment.heading.credit_card'})
