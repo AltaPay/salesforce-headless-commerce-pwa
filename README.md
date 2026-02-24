@@ -11,7 +11,7 @@ Make sure the `int_marketpay_headless` cartridge is installed and configured in 
 
 ### Environment variables
 
-1. Make sure you have a `.env` file. You can look at `.env.example` for inspiration. `.env` file must contain the following environment variables
+Make sure you have a `.env` file. You can look at `.env.example` for inspiration. `.env` file must contain the following environment variables
 
 - COMMERCE_API_CLIENT_ID
 - COMMERCE_API_ORG_ID
