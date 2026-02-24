@@ -28,11 +28,15 @@ To start your web server for local development:
 
 - Navigate to the app directory:
 
-        cd packages/marketpay-retail-react-app
+    ```bash
+    cd packages/marketpay-retail-react-app
+    ```
 
 - Run the following command:
 
-        npm start
+    ```bash
+    npm start
+    ```
 
     Now that the development server is running, you can open a browser and preview your commerce app:
 
