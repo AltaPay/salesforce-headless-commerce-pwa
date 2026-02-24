@@ -39,7 +39,6 @@ const PaymentForm = ({form, onPaymentMethodSelect, onSubmit}) => {
     )
 
     const paymentMethods = paymentMethodsData?.applicablePaymentMethods || []
-
     // Track selected payment method
     const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('')
 
@@ -56,13 +55,14 @@ const PaymentForm = ({form, onPaymentMethodSelect, onSubmit}) => {
 
     // Set default payment method when data loads
     useEffect(() => {
-        if (paymentMethods.length > 0 && !selectedPaymentMethodId) {
-            // Default to first MarketPay method if available, otherwise first method
-            const marketPayMethod = paymentMethods.find((m) => isMarketPayMethod(m.paymentProcessorId))
-            const defaultMethod = marketPayMethod || paymentMethods[0]
-            setSelectedPaymentMethodId(defaultMethod.id)
+        if (!paymentMethods.length || selectedPaymentMethodId) {
+            return
         }
-    }, [paymentMethods, selectedPaymentMethodId])
+        // Default to first MarketPay method if available, otherwise first method
+        const marketPayMethod = paymentMethods.find((m) => isMarketPayMethod(m.paymentProcessorId))
+        const defaultMethod = marketPayMethod || paymentMethods[0]
+        setSelectedPaymentMethodId(defaultMethod.id)
+    }, [paymentMethods])
 
     // Notify parent when payment method changes
     useEffect(() => {

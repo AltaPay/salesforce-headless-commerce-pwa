@@ -88,7 +88,6 @@ const Checkout = () => {
     const submitOrder = async () => {
         setIsLoading(true)
         try {
-
             const order = await createOrder({
                 body: {basketId: basket.basketId}
             })
