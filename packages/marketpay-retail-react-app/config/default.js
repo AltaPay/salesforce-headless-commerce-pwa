@@ -5,6 +5,9 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 /* eslint-disable @typescript-eslint/no-var-requires */
+require('dotenv').config({
+    path: require('path').resolve(__dirname, '../.env')
+})
 const sites = require('./sites.js')
 const {parseSettings} = require('./utils.js')
 
