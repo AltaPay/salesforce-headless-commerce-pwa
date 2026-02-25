@@ -1,4 +1,4 @@
-# AltaPay for Salesforce B2C Composable Storefront PWA
+# AltaPay for Salesforce Composable Storefront B2C Commerce PWA
 
 This repository contains the MarketPay reference react application, which can be used to demonstrate the payment flow or to support the integration of AltaPay via the Salesforce cartridge for Salesforce B2C Commerce (SFCC).
 
