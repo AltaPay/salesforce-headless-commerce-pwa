@@ -91,7 +91,13 @@ const Checkout = () => {
             const order = await createOrder({
                 body: {basketId: basket.basketId}
             })
-            navigate(`/checkout/confirmation/${order.orderNo}`)
+
+            const marketPayPaymentURL = order?.paymentInstruments?.[0]?.c_marketPayPaymentURL
+            if (marketPayPaymentURL) {
+                window.location.href = marketPayPaymentURL
+            } else {
+                navigate(`/checkout/confirmation/${order.orderNo}`)
+            }
         } catch (error) {
             const message = formatMessage({
                 id: 'checkout.message.generic_error',

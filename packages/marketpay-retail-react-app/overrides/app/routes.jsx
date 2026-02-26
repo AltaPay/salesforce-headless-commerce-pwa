@@ -21,6 +21,7 @@ const fallback = <Skeleton height="75vh" width="100%" />
 const Home = loadable(() => import('./pages/home'), {fallback})
 const MyNewRoute = loadable(() => import('./pages/my-new-route'))
 const Checkout = loadable(() => import('./pages/checkout'), {fallback})
+const CheckoutFailed = loadable(() => import('./pages/checkout/failed'), {fallback})
 
 const routes = [
     {
@@ -36,6 +37,10 @@ const routes = [
         path: '/checkout',
         component: Checkout,
         exact: true
+    },
+    {
+        path: '/checkout/failed/:orderNo',
+        component: CheckoutFailed
     },
     ..._routes
 ]
