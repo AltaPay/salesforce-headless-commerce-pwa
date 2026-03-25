@@ -43,6 +43,7 @@ import LoadingSpinner from '@salesforce/retail-react-app/app/components/loading-
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {useMultiship} from '@salesforce/retail-react-app/app/hooks/use-multiship'
 import {GoogleAPIProvider} from '@salesforce/retail-react-app/app/pages/checkout/util/google-api-provider'
+import {extractRedirectUrl} from 'marketpay-salesforce-pwa'
 
 const Checkout = () => {
     const {formatMessage} = useIntl()
@@ -92,7 +93,7 @@ const Checkout = () => {
                 body: {basketId: basket.basketId}
             })
 
-            const marketPayPaymentURL = order?.paymentInstruments?.[0]?.c_marketPayPaymentURL
+            const marketPayPaymentURL = extractRedirectUrl(order)
             if (marketPayPaymentURL) {
                 window.location.href = marketPayPaymentURL
             } else {

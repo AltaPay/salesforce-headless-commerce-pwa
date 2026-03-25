@@ -1,0 +1,5 @@
+export const MARKETPAY_PREFIX = 'MARKETPAY_'
+export const CREDIT_CARD_METHOD = 'CREDIT_CARD'
+export const ATTR_PAYMENT_URL = 'c_marketPayPaymentURL'
+export const ATTR_PAYMENT_METHOD_ID = 'c_marketPayPaymentMethodID'
+export const ATTR_MARKETPAY_DATA = 'c_marketPay'
