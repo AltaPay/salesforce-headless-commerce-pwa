@@ -1,3 +1,6 @@
 packages/marketpay-retail-react-app/node_modules/
 packages/marketpay-retail-react-app/build/loadable-stats.json
 packages/marketpay-retail-react-app/.env
+.DS_Store
+packages/marketpay-retail-react-app/build/
+.sfdx/
