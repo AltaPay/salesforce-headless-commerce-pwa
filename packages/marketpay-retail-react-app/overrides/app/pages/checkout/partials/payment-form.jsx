@@ -22,6 +22,7 @@ import {usePaymentMethodsForBasket} from '@salesforce/commerce-sdk-react'
 import {LockIcon} from '@salesforce/retail-react-app/app/components/icons'
 import CreditCardFields from '@salesforce/retail-react-app/app/components/forms/credit-card-fields'
 import {useCurrency} from '@salesforce/retail-react-app/app/hooks'
+import {isMarketPayMethod, requiresCreditCardForm, findDefaultPaymentMethod} from 'marketpay-salesforce-pwa'
 
 const PaymentForm = ({form, onPaymentMethodSelect, onSubmit}) => {
     const {formatMessage} = useIntl()
@@ -42,27 +43,15 @@ const PaymentForm = ({form, onPaymentMethodSelect, onSubmit}) => {
     // Track selected payment method
     const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('')
 
-    // Helper to check if a payment method is MarketPay
-    const isMarketPayMethod = (paymentProcessorId) => {
-        return paymentProcessorId === 'MARKETPAY'
-    }
-
-    // Helper to check if a payment method requires credit card form
-    const requiresCreditCardForm = (methodId) => {
-        // Only standard CREDIT_CARD requires form, MarketPay methods do not
-        return methodId === 'CREDIT_CARD'
-    }
-
     // Set default payment method when data loads
     useEffect(() => {
-        if (!paymentMethods.length || selectedPaymentMethodId) {
-            return
+        if (paymentMethods.length > 0 && !selectedPaymentMethodId) {
+            const defaultMethod = findDefaultPaymentMethod(paymentMethods)
+            if (defaultMethod) {
+            setSelectedPaymentMethodId(defaultMethod.id)
+            }
         }
-        // Default to first MarketPay method if available, otherwise first method
-        const marketPayMethod = paymentMethods.find((m) => isMarketPayMethod(m.paymentProcessorId))
-        const defaultMethod = marketPayMethod || paymentMethods[0]
-        setSelectedPaymentMethodId(defaultMethod.id)
-    }, [paymentMethods])
+    }, [paymentMethods, selectedPaymentMethodId])
 
     // Notify parent when payment method changes
     useEffect(() => {
@@ -97,7 +86,7 @@ const PaymentForm = ({form, onPaymentMethodSelect, onSubmit}) => {
                                 name="payment-selection"
                             >
                                 {paymentMethods.map((method, index) => {
-                                    const isMarketPay = isMarketPayMethod(method.paymentProcessorId)
+                                    const isMarketPay = isMarketPayMethod(method.id)
                                     const needsCreditCardForm = requiresCreditCardForm(method.id)
                                     const isSelected = selectedPaymentMethodId === method.id
 

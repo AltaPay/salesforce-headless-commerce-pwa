@@ -1,0 +1,17 @@
+{
+  "name": "marketpay-salesforce-pwa",
+  "version": "1.0.0",
+  "description": "MarketPay payment integration for Salesforce PWA Kit",
+  "main": "lib/index.js",
+  "keywords": [
+    "marketpay",
+    "salesforce",
+    "pwa",
+    "checkout",
+    "payment"
+  ],
+  "license": "ISC",
+  "peerDependencies": {
+    "react": "^18.0.0"
+  }
+}

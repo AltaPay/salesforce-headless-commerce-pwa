@@ -39,6 +39,11 @@ import AddressDisplay from '@salesforce/retail-react-app/app/components/address-
 import {PromoCode, usePromoCode} from '@salesforce/retail-react-app/app/components/promo-code'
 import {API_ERROR_MESSAGE} from '@salesforce/retail-react-app/app/constants'
 import {isPickupShipment} from '@salesforce/retail-react-app/app/utils/shipment-utils'
+import {
+    isMarketPayMethod,
+    constructMarketPayPaymentInstrument,
+    getMarketPayDisplayName
+} from 'marketpay-salesforce-pwa'
 
 const Payment = () => {
     const {formatMessage} = useIntl()
@@ -98,21 +103,12 @@ const Payment = () => {
 
     const paymentMethodForm = useForm()
 
-    // Helper to check if payment method is MarketPay
-    const isMarketPayMethod = (paymentProcessorId) => {
-        return paymentProcessorId === 'MARKETPAY'
-    }
-
     // Handle MarketPay payment submission
     const onMarketPaySubmit = async (paymentMethod) => {
-        // Get c_marketPay data from payment method
-        const marketPayData = paymentMethod?.c_marketPay || {}
-
-        const paymentInstrument = {
-            amount: basket?.orderTotal,
-            paymentMethodId: paymentMethod.id,
-            c_marketPayPaymentMethodID: marketPayData.paymentMethod?.id || ''
-        }
+        const paymentInstrument = constructMarketPayPaymentInstrument(
+            paymentMethod,
+            basket?.orderTotal
+        )
 
         const response = await addPaymentInstrumentToBasket({
             parameters: {basketId: basket?.basketId},
@@ -143,12 +139,6 @@ const Payment = () => {
             parameters: {basketId: basket?.basketId},
             body: paymentInstrument
         })
-    }
-    const onPaymentSubmit = async (formValue) => {
-        if (isMarketPayMethod(selectedPaymentMethod?.paymentProcessorId)) {
-            return onMarketPaySubmit(selectedPaymentMethod)
-        }
-        return onCreditCardSubmit(formValue)
     }
     const onBillingSubmit = async () => {
         const isFormValid = await billingAddressForm.trigger()
@@ -183,7 +173,7 @@ const Payment = () => {
 
     const onSubmit = async (paymentFormValues) => {
         // For MarketPay, skip form validation since there are no form fields
-        if (isMarketPayMethod(selectedPaymentMethod?.paymentProcessorId)) {
+        if (isMarketPayMethod(selectedPaymentMethod?.id)) {
             setIsMarketPaySubmitting(true)
             if (!appliedPayment) {
                 try {
@@ -235,8 +225,8 @@ const Payment = () => {
 
     // Determine payment summary heading based on applied payment type
     const getPaymentHeading = () => {
-        if (appliedPayment && appliedPayment.paymentMethodId.includes('MARKETPAY')) {
-            return appliedPayment.paymentMethodId.replace('MARKETPAY_', '').replace('_', ' ')
+        if (appliedPayment && isMarketPayMethod(appliedPayment.paymentMethodId)) {
+            return getMarketPayDisplayName(appliedPayment.paymentMethodId)
         }
         return formatMessage({defaultMessage: 'Credit Card', id: 'checkout_payment.heading.credit_card'})
     }
