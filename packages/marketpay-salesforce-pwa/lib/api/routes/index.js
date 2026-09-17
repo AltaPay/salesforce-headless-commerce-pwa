@@ -8,14 +8,14 @@ import {
 import {callbackFormHandler} from '../middleware/callback-form.js'
 
 /**
- * Registers MarketPay's server-side endpoints on the Express app.
+ * Registers MarketPay's server-side callbacks on the Express app.
  *
  * @param app - express app used to register the routes
  * @param runtime - express runtime (unused today, accepted for parity with other integrations)
  * @param overrides (optional) - override the default handler chain for an endpoint
  *
  */
-export function registerMarketPayEndpoints(app, runtime, overrides = {}) {
+export function registerMarketPayCallbacks(app, runtime, overrides = {}) {
 
     const notificationHandler = overrides.notification || [
         validateKnownIP,
