@@ -16,6 +16,7 @@ import {getRuntime} from '@salesforce/pwa-kit-runtime/ssr/server/express'
 import {defaultPwaKitSecurityHeaders} from '@salesforce/pwa-kit-runtime/utils/middleware'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
+import {registerMarketPayCallbacks} from 'marketpay-salesforce-pwa/lib/api/routes/index'
 
 const config = getConfig()
 
@@ -331,8 +332,16 @@ export async function jwksCaching(req, res, options) {
 }
 
 const {handler} = runtime.createHandler(options, (app) => {
-    app.use(express.json()) // To parse JSON payloads
-    app.use(express.urlencoded({extended: true}))
+    const rawBody = (req, res, buf) => {
+        req.rawBody = buf.toString('utf8')
+    }
+    app.use(express.json({ verify: rawBody }))
+    app.use(
+        express.urlencoded({
+            extended: true,
+            verify: rawBody
+        })
+    )
     // Set default HTTP security headers required by PWA Kit
     app.use(defaultPwaKitSecurityHeaders)
     // Set custom HTTP security headers
@@ -425,6 +434,10 @@ const {handler} = runtime.createHandler(options, (app) => {
     app.get('/favicon.ico', runtime.serveStaticFile('static/ico/favicon.ico'))
 
     app.get('/worker.js(.map)?', runtime.serveServiceWorker)
+
+    // MarketPay webhook callbacks (e.g. /webhooks/marketpay/marketpay-notification)
+    registerMarketPayCallbacks(app, runtime)
+
     app.get('*', runtime.render)
 })
 // SSR requires that we export a single handler function called 'get', that
