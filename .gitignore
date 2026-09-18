@@ -4,3 +4,5 @@ packages/marketpay-retail-react-app/.env
 .DS_Store
 packages/marketpay-retail-react-app/build/
 .sfdx/
+packages/marketpay-salesforce-pwa/dist/
+packages/marketpay-salesforce-pwa/node_modules/
