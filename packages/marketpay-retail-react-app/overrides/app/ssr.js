@@ -16,7 +16,7 @@ import {getRuntime} from '@salesforce/pwa-kit-runtime/ssr/server/express'
 import {defaultPwaKitSecurityHeaders} from '@salesforce/pwa-kit-runtime/utils/middleware'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
-import {registerMarketPayCallbacks} from 'marketpay-salesforce-pwa/lib/api/routes/index'
+import {registerMarketPayCallbacks} from 'marketpay-salesforce-pwa/dist/api/routes/index.js'
 
 const config = getConfig()
 
