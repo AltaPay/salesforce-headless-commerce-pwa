@@ -9,7 +9,7 @@
 // You can also provide aliases for your locale. They will be used in place of your locale id when generating paths across the app
 module.exports = [
     {
-        id: process.env.SITE_ID || 'RefArchGlobal',
+        id: process.env.COMMERCE_API_SITE_ID || 'RefArchGlobal',
         l10n: {
             supportedCurrencies: [process.env.SUPPORTED_CURRENCIES || 'EUR'],
             defaultCurrency: process.env.DEFAULT_CURRENCY || 'EUR',
