@@ -1,5 +1,5 @@
 import crypto from 'crypto'
-import {getClientIp, isKnownIp} from '../../utils/ip.js'
+import {getClientIP, isRequestFromKnownIP} from '../../utils/ipHelpers.js'
 import {logger} from '../../utils/logger.js'
 import {forwardToSCAPI} from '../scapi-client.js'
 import {config} from '../config.js'
@@ -37,14 +37,12 @@ function safeHexEqual(a, b) {
  * Validates IP address.
  */
 export function validateKnownIP(req, res, next) {
-    if (!config.knownIpProtectionEnabled) {
+    if (!config.isKnownIPProtectionEnabled) {
         return next()
     }
 
-    const clientIp = getClientIp(req)
-
-    if (!clientIp || !isKnownIp(clientIp, config.allowedIps)) {
-        logger.warn('Rejected MarketPay callback from unknown IP', {clientIp})
+    if (!isRequestFromKnownIP(req, config.allowedIPs)) {
+        logger.warn('Rejected MarketPay callback from unknown IP', {clientIP: getClientIP(req)})
         return res.status(400).json({message: 'Invalid callback request'})
     }
 

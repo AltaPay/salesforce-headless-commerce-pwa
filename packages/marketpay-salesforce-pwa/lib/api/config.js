@@ -13,8 +13,8 @@ export const config = {
     commerceApiOrgId: process.env.COMMERCE_API_ORG_ID,
     commerceApiSiteId: process.env.COMMERCE_API_SITE_ID,
     defaultErrorUrl: process.env.MARKETPAY_DEFAULT_ERROR_URL,
-    knownIpProtectionEnabled: process.env.MARKETPAY_KNOWN_IP_PROTECTION !== 'false',
-    allowedIps: process.env.MARKETPAY_ALLOWED_IPS
+    isKnownIPProtectionEnabled: process.env.MARKETPAY_KNOWN_IP_PROTECTION !== 'false',
+    allowedIPs: process.env.MARKETPAY_ALLOWED_IPS
         ? process.env.MARKETPAY_ALLOWED_IPS.split(',').map((entry) => entry.trim())
         : MARKETPAY_IP_ADDRESS_SET,
     callbackSecret: process.env.MARKETPAY_CALLBACK_SECRET

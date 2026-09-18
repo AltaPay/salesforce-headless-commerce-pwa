@@ -1,4 +1,4 @@
-import {MARKETPAY_PREFIX, CREDIT_CARD_METHOD} from './constants'
+import {MARKETPAY_PREFIX, CREDIT_CARD_METHOD} from './constants.js'
 
 /**
  * Check if a payment method ID belongs to MarketPay.
