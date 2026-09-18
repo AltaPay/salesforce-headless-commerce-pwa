@@ -1,4 +1,4 @@
-import {ATTR_PAYMENT_URL, ATTR_PAYMENT_METHOD_ID, ATTR_MARKETPAY_DATA} from './constants'
+import {ATTR_PAYMENT_URL, ATTR_PAYMENT_METHOD_ID, ATTR_MARKETPAY_DATA} from './constants.js'
 
 /**
  * Build the payment instrument object to send to SCAPI for a MarketPay method.

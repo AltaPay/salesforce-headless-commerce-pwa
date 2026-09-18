@@ -1,4 +1,4 @@
-import {MARKETPAY_PREFIX} from './constants'
+import {MARKETPAY_PREFIX} from './constants.js'
 
 /**
  * Convert a MarketPay payment method ID into a human-readable display name.
