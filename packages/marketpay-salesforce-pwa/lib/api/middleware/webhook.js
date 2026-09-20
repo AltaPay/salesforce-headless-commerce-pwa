@@ -50,45 +50,62 @@ export function validateKnownIP(req, res, next) {
 }
 
 /**
- * Validates webhook signature.
+ * Responds to an invalid/unverifiable signature as JSON.
  */
-export function validateSignature(req, res, next) {
-    const secret = config.callbackSecret
-    if (!secret) {
-        return res.status(500).json({message: 'MarketPay callback secret is not configured'})
-    }
+export function sendSignatureErrorJson(res, {status, message}) {
+    return res.status(status).json({message})
+}
 
-    const signatureHeader = req.headers[SIGNATURE_HEADER]
-    if (!signatureHeader) {
-        return res.status(401).json({message: 'Invalid signature'})
-    }
+/**
+ * Responds to an invalid/unverifiable signature by redirecting to the default error URL.
+ */
+export function redirectOnSignatureError(res) {
+    return res.redirect(302, config.defaultErrorUrl)
+}
 
-    const {timestamp, signatures} = parseSignatureHeader(signatureHeader)
-    if (!timestamp || signatures.length === 0) {
-        return res.status(401).json({message: 'Invalid signature'})
-    }
+/**
+ * Validates the signature of the incoming request.
+ */
+export function validateSignature(onInvalid) {
+    return function (req, res, next) {
+        const secret = config.callbackSecret
 
-    if (!req.rawBody) {
-        return res.status(400).json({message: 'Missing request body'})
-    }
-
-    const payload = `${req.rawBody}.${timestamp}`
-    const expectedHex = crypto.createHmac('sha256', secret).update(payload, 'utf8').digest('hex')
-
-    const isValid = signatures.some((sig) => {
-        try {
-            return safeHexEqual(expectedHex, sig)
-        } catch {
-            return false
+        if (!secret) {
+            return onInvalid(res, { status: 500, message: 'MarketPay callback secret is not configured' })
         }
-    })
 
-    if (!isValid) {
-        logger.warn('Rejected MarketPay callback with invalid signature')
-        return res.status(401).json({message: 'Invalid signature'})
+        const signatureHeader = req.headers[SIGNATURE_HEADER]
+        if (!signatureHeader) {
+            return onInvalid(res, { status: 401, message: 'Invalid signature' })
+        }
+
+        const { timestamp, signatures } = parseSignatureHeader(signatureHeader)
+        if (!timestamp || signatures.length === 0) {
+            return onInvalid(res, { status: 401, message: 'Invalid signature' })
+        }
+
+        if (!req.rawBody) {
+            return onInvalid(res, { status: 400, message: 'Missing request body' })
+        }
+
+        const payload = `${req.rawBody}.${timestamp}`
+        const expectedHex = crypto.createHmac('sha256', secret).update(payload, 'utf8').digest('hex')
+
+        const isValid = signatures.some((sig) => {
+            try {
+                return safeHexEqual(expectedHex, sig)
+            } catch {
+                return false
+            }
+        })
+
+        if (!isValid) {
+            logger.warn('Rejected MarketPay callback with invalid signature')
+            return onInvalid(res, { status: 401, message: 'Invalid signature' })
+        }
+
+        return next()
     }
-
-    return next()
 }
 
 /**

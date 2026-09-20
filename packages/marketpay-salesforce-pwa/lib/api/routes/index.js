@@ -1,5 +1,7 @@
 import {
     validateSignature,
+    sendSignatureErrorJson,
+    redirectOnSignatureError,
     validateKnownIP,
     paymentNotificationHandler,
     paymentSuccessHandler,
@@ -18,16 +20,19 @@ import {callbackFormHandler} from '../middleware/callback-form.js'
 export function registerMarketPayCallbacks(app, runtime, overrides = {}) {
 
     const notificationHandler = overrides.notification || [
+        validateSignature(sendSignatureErrorJson),
         validateKnownIP,
         paymentNotificationHandler
     ]
 
     const paymentSuccessChain = overrides.paymentSuccess || [
+        validateSignature(redirectOnSignatureError),
         validateKnownIP,
         paymentSuccessHandler
     ]
 
     const paymentFailedChain = overrides.paymentFailed || [
+        validateSignature(redirectOnSignatureError),
         validateKnownIP,
         paymentFailedHandler
     ]
