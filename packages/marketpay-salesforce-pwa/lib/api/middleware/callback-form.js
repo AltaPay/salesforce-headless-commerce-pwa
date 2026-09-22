@@ -25,7 +25,7 @@ function escapeHtml(value) {
 export function callbackFormHandler(req, res) {
   const languageCode = escapeHtml(req.body.language)
   const formTemplateClass = escapeHtml(req.body.form_template)
-  const title = escapeHtml(req.body.title)
+  const title = 'Payment'
 
   const html = `<!DOCTYPE html>
 <isanalyticsoff/>
@@ -55,7 +55,7 @@ export function callbackFormHandler(req, res) {
         padding: 20px 50px;
       }
     
-      .form_checkout_standalone .content-wrapper {
+      .form_checkout_standalone.content-wrapper {
         max-width: 560px;
       }
     
@@ -77,11 +77,6 @@ export function callbackFormHandler(req, res) {
         width: 100%;
         max-width: 650px;
         margin: 0 auto;
-      }
-    
-      .form_checkout_div .woocommerce-order-details {
-        padding: 0;
-        margin-bottom: 30px;
       }
     
       .form_checkout_div .payment-title {
@@ -350,15 +345,15 @@ export function callbackFormHandler(req, res) {
       }
     
       @media (max-width: 480px) {
-        .form_checkout_div .content-wrapper {
+        .content-wrapper.form_checkout_div {
           padding-left: 15px;
           padding-right: 15px;
         }
       }
     </style>
   </head>
-  <body class="${formTemplateClass}">
-    <div class="content-wrapper">
+  <body>
+    <div class="content-wrapper ${formTemplateClass}">
       <div class="payment-form-wrapper">
         <form id="PensioPaymentForm">
           <iscomment>All content in here will be replaced by the actual payment form</iscomment>
