@@ -2,7 +2,7 @@
   "name": "marketpay-salesforce-pwa",
   "version": "1.0.0",
   "description": "MarketPay payment integration for Salesforce PWA Kit",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "keywords": [
     "marketpay",
     "salesforce",
@@ -11,7 +11,19 @@
     "payment"
   ],
   "license": "ISC",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && babel lib -d dist --extensions \".js\""
+  },
   "peerDependencies": {
     "react": "^18.0.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.24.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.24.0",
+    "@babel/core": "^7.24.0",
+    "@babel/preset-env": "^7.24.0"
   }
 }

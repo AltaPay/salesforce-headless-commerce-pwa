@@ -22,6 +22,13 @@ const Home = loadable(() => import('./pages/home'), {fallback})
 const MyNewRoute = loadable(() => import('./pages/my-new-route'))
 const Checkout = loadable(() => import('./pages/checkout'), {fallback})
 const CheckoutFailed = loadable(() => import('./pages/checkout/failed'), {fallback})
+const CheckoutConfirmationRedirect = loadable(() => import('./pages/checkout/confirmation-redirect'), {
+    fallback
+})
+const CheckoutConfirmation = loadable(
+    () => import('@salesforce/retail-react-app/app/pages/checkout/confirmation'),
+    {fallback}
+)
 
 const routes = [
     {
@@ -41,6 +48,16 @@ const routes = [
     {
         path: '/checkout/failed/:orderNo',
         component: CheckoutFailed
+    },
+    {
+        path: '/:locale?/checkout/confirmation',
+        component: CheckoutConfirmationRedirect,
+        exact: true
+    },
+    {
+        path: '/:locale?/checkout/confirmation/:orderNo',
+        component: CheckoutConfirmation,
+        exact: true
     },
     ..._routes
 ]
