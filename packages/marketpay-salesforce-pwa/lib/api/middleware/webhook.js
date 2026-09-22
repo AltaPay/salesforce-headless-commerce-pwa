@@ -68,6 +68,10 @@ export function redirectOnSignatureError(res) {
  */
 export function validateSignature(onInvalid) {
     return function (req, res, next) {
+        if (!config.isSignatureProtectionEnabled) {
+            return next()
+        }
+
         const secret = config.callbackSecret
 
         if (!secret) {

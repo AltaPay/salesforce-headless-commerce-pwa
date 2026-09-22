@@ -31,6 +31,7 @@ To handle MarketPay's webhook/callback requests (see [MarketPay Webhook Callback
 - MARKETPAY_DEFAULT_ERROR_URL
 - MARKETPAY_KNOWN_IP_PROTECTION
 - MARKETPAY_ALLOWED_IPS (optional)
+- MARKETPAY_SIGNATURE_PROTECTION
 - MARKETPAY_CALLBACK_SECRET
 
 ### Run the app
@@ -74,7 +75,8 @@ Env vars used for this:
 | `MARKETPAY_DEFAULT_ERROR_URL` | Fallback redirect if a callback can't be processed (missing/invalid signature, SCAPI unreachable, order not found, etc.). |
 | `MARKETPAY_KNOWN_IP_PROTECTION` | Restricts `/webhooks/marketpay/*` to MarketPay's known IP ranges. Defaults to `true`; set to `"false"` to disable (e.g. behind a firewall/proxy that obscures the real caller IP). |
 | `MARKETPAY_ALLOWED_IPS` | Optional comma-separated list of IPs/CIDR ranges, overriding the built-in default allowlist. |
-| `MARKETPAY_CALLBACK_SECRET` | Shared secret used to verify the `altapay-signature` header (HMAC-SHA256) on incoming callbacks. Must match the secret configured on the MarketPay side. |
+| `MARKETPAY_SIGNATURE_PROTECTION` | Verifies that incoming callbacks on `/webhooks/marketpay/*` are genuinely from MarketPay. Defaults to `true`; set to `"false"` to disable. When enabled, `MARKETPAY_CALLBACK_SECRET` must also be set, or every callback is rejected. |
+| `MARKETPAY_CALLBACK_SECRET` | Shared secret used to verify that incoming callbacks are genuinely from MarketPay. Must match the secret configured on the MarketPay side — see [Callback Security setup](https://documentation.altapay.com/v2/Checkout-API/CallbackSecurity/). |
 
 On the SFCC side, the `int_marketpay_headless` cartridge's **MRT Base URL for Callbacks** site preference (`marketPayCallbackBaseURL`) must point at this app's deployed origin so MarketPay's callback URLs resolve here.
 

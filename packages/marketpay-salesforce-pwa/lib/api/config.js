@@ -32,6 +32,9 @@ export const config = {
     get isKnownIPProtectionEnabled() {
         return process.env.MARKETPAY_KNOWN_IP_PROTECTION !== 'false'
     },
+    get isSignatureProtectionEnabled() {
+        return process.env.MARKETPAY_SIGNATURE_PROTECTION !== 'false'
+    },
     get allowedIPs() {
         return process.env.MARKETPAY_ALLOWED_IPS
             ? process.env.MARKETPAY_ALLOWED_IPS.split(',').map((entry) => entry.trim())
