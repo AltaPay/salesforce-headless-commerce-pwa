@@ -1,21 +1,13 @@
 import {logger} from '../utils/logger.js'
 
 const MARKETPAY_IP_ADDRESS_SET = ['185.206.120.0/24', '2a10:a200::/29', '185.203.232.129', '185.203.233.129'];
-const ADMIN_TOKEN_URL = 'https://account.demandware.com/dwsso/oauth2/access_token?grant_type=client_credentials'
 
 export const config = {
-    adminTokenUrl: ADMIN_TOKEN_URL,
-    get adminClientId() {
-        return process.env.ADMIN_CLIENT_ID_PRIVATE
+    get slasClientId() {
+        return process.env.COMMERCE_API_CLIENT_ID
     },
-    get adminClientSecret() {
-        return process.env.ADMIN_CLIENT_SECRET
-    },
-    get sfccRealmAndInstance() {
-        return process.env.SFCC_REALM_AND_INSTANCE
-    },
-    get sfccOAuthScopes() {
-        return process.env.SFCC_OAUTH_SCOPES
+    get slasClientSecret() {
+        return process.env.PWA_KIT_SLAS_CLIENT_SECRET
     },
     get commerceApiShortCode() {
         return process.env.COMMERCE_API_SHORT_CODE
@@ -46,8 +38,8 @@ export const config = {
 }
 
 const REQUIRED_ENV_VARS = {
-    adminClientId: 'ADMIN_CLIENT_ID_PRIVATE',
-    adminClientSecret: 'ADMIN_CLIENT_SECRET',
+    slasClientId: 'COMMERCE_API_CLIENT_ID',
+    slasClientSecret: 'PWA_KIT_SLAS_CLIENT_SECRET',
     commerceApiShortCode: 'COMMERCE_API_SHORT_CODE',
     commerceApiOrgId: 'COMMERCE_API_ORG_ID',
     commerceApiSiteId: 'COMMERCE_API_SITE_ID',
