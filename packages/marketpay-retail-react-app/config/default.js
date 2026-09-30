@@ -5,9 +5,19 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 /* eslint-disable @typescript-eslint/no-var-requires */
-require('dotenv').config({
-    path: require('path').resolve(__dirname, '../.env')
-})
+// Load .env locally. When pushing, this file is loaded from build/config, so also look one
+// level higher. dotenv isn't in the Managed Runtime bundle; there, env vars come from the
+// environment settings instead.
+try {
+    require('dotenv').config({
+        path: [
+            require('path').resolve(__dirname, '../.env'),
+            require('path').resolve(__dirname, '../../.env')
+        ]
+    })
+} catch (e) {
+    if (e.code !== 'MODULE_NOT_FOUND') throw e
+}
 const sites = require('./sites.js')
 const {parseSettings} = require('./utils.js')
 
