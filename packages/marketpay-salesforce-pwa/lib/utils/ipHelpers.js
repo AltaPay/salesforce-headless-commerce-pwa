@@ -48,11 +48,12 @@ export function isKnownIP(clientIP, allowedEntries) {
 }
 
 /**
- * Extracts the caller's IP from the request.
+ * Extracts the caller's IP from the request. Relies on Express's `req.ip`, so the
+ * app must configure `trust proxy` to match its proxy topology (see
+ * MARKETPAY_TRUSTED_PROXY_HOPS) - X-Forwarded-For is never parsed here.
  */
 export function getClientIP(req) {
-    const forwardedFor = req.headers['x-forwarded-for']
-    const ip = forwardedFor ? forwardedFor.split(',')[0].trim() : req.socket && req.socket.remoteAddress
+    const ip = req.ip
 
     if (ip && ip.startsWith('::ffff:') && ip.includes('.')) {
         return ip.slice(7)

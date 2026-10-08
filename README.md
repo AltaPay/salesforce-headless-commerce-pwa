@@ -30,6 +30,7 @@ To handle MarketPay's webhook/callback requests (see [MarketPay Webhook Callback
 - MARKETPAY_ALLOWED_IPS (optional)
 - MARKETPAY_SIGNATURE_PROTECTION
 - MARKETPAY_CALLBACK_SECRET
+- MARKETPAY_TRUSTED_PROXY_HOPS (required on deployments behind a proxy/CDN, see below)
 
 ### Run the app
 
@@ -72,6 +73,7 @@ Env vars used for this:
 | `MARKETPAY_ALLOWED_IPS` | Optional comma-separated list of IPs/CIDR ranges, overriding the built-in default allowlist. |
 | `MARKETPAY_SIGNATURE_PROTECTION` | Verifies that incoming callbacks on `/webhooks/marketpay/*` are genuinely from MarketPay. Defaults to `true`; set to `"false"` to disable. When enabled, `MARKETPAY_CALLBACK_SECRET` must also be set, or every callback is rejected. |
 | `MARKETPAY_CALLBACK_SECRET` | Shared secret used to verify that incoming callbacks are genuinely from MarketPay. Must match the secret configured on the MarketPay side — see [Callback Security setup](https://documentation.altapay.com/v2/Checkout-API/CallbackSecurity/). |
+| `MARKETPAY_TRUSTED_PROXY_HOPS` | Number of trusted proxies (CDN, load balancer) in front of this app, used to resolve the real caller IP for `MARKETPAY_KNOWN_IP_PROTECTION`. Must match your proxy chain exactly. Leave unset when there is no proxy (e.g. local development). Apps importing the module must set `trust proxy` themselves, as `ssr.js` does here. |
 
 On the SFCC side, the `int_marketpay_headless` cartridge's **MRT Base URL for Callbacks** site preference (`marketPayCallbackBaseURL`) must point at this app's deployed origin so MarketPay's callback URLs resolve here.
 

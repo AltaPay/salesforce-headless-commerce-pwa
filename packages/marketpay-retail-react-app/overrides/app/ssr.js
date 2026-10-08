@@ -332,6 +332,13 @@ export async function jwksCaching(req, res, options) {
 }
 
 const {handler} = runtime.createHandler(options, (app) => {
+    // Number of trusted reverse proxies in front of this app, so req.ip resolves to the real
+    // caller (used by MarketPay's known IP protection). Left unset, req.ip is the nearest peer.
+    const trustedProxyHops = parseInt(process.env.MARKETPAY_TRUSTED_PROXY_HOPS, 10)
+    if (Number.isInteger(trustedProxyHops) && trustedProxyHops > 0) {
+        app.set('trust proxy', trustedProxyHops)
+    }
+
     const rawBody = (req, res, buf) => {
         req.rawBody = buf.toString('utf8')
     }
