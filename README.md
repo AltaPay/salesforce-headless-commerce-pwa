@@ -77,6 +77,31 @@ Env vars used for this:
 
 On the SFCC side, the `int_marketpay_headless` cartridge's **MRT Base URL for Callbacks** site preference (`marketPayCallbackBaseURL`) must point at this app's deployed origin so MarketPay's callback URLs resolve here.
 
+### Using the module in your own app
+
+If you use `marketpay-salesforce-pwa` in your own app, add this to your `ssr.js`:
+
+```js
+import express from 'express'
+import {registerMarketPayCallbacks} from 'marketpay-salesforce-pwa/dist/api/routes/index.js'
+
+const {handler} = runtime.createHandler(options, (app) => {
+    // Real caller IP behind proxies (known IP protection)
+    const hops = parseInt(process.env.MARKETPAY_TRUSTED_PROXY_HOPS, 10)
+    if (Number.isInteger(hops) && hops > 0) app.set('trust proxy', hops)
+
+    // Raw webhook body for signature verification, before any other body parser
+    const rawBody = (req, res, buf) => (req.rawBody = buf.toString('utf8'))
+    app.use('/webhooks/marketpay', express.json({verify: rawBody}), express.urlencoded({extended: true, verify: rawBody}))
+    app.use(express.json())
+    app.use(express.urlencoded({extended: true}))
+
+    registerMarketPayCallbacks(app, runtime)
+})
+```
+
+Without the raw body capture, every callback is rejected with `Missing request body`.
+
 ## Changelog
 
 See [Changelog](CHANGELOG.md) for all the release notes.

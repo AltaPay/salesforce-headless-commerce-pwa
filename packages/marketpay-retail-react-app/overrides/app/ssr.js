@@ -339,16 +339,18 @@ const {handler} = runtime.createHandler(options, (app) => {
         app.set('trust proxy', trustedProxyHops)
     }
 
+    // The raw body is only kept for MarketPay's webhooks, which need it to verify the callback
+    // signature. These parsers run first, so the global ones below skip those requests.
     const rawBody = (req, res, buf) => {
         req.rawBody = buf.toString('utf8')
     }
-    app.use(express.json({ verify: rawBody }))
     app.use(
-        express.urlencoded({
-            extended: true,
-            verify: rawBody
-        })
+        '/webhooks/marketpay',
+        express.json({verify: rawBody}),
+        express.urlencoded({extended: true, verify: rawBody})
     )
+    app.use(express.json()) // To parse JSON payloads
+    app.use(express.urlencoded({extended: true}))
     // Set default HTTP security headers required by PWA Kit
     app.use(defaultPwaKitSecurityHeaders)
     // Set custom HTTP security headers
