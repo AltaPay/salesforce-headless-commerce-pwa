@@ -5,6 +5,7 @@ import {forwardToSCAPI} from '../scapi-client.js'
 import {config} from '../config.js'
 
 const SIGNATURE_HEADER = 'altapay-signature'
+const SIGNATURE_TOLERANCE_MS = 5 * 60 * 1000
 
 /**
  * Parses the `AltaPay-Signature` header into its timestamp and signature parts.
@@ -24,6 +25,16 @@ function parseSignatureHeader(headerValue) {
     })
 
     return {timestamp, signatures}
+}
+
+/**
+ * Checks that the signature timestamp (Unix milliseconds) is no more than
+ * SIGNATURE_TOLERANCE_MS away from the current time, to prevent replay attacks.
+ */
+function isTimestampWithinTolerance(timestamp) {
+    if (!/^\d+$/.test(timestamp)) return false
+    const ageMs = Math.abs(Date.now() - Number(timestamp))
+    return ageMs <= SIGNATURE_TOLERANCE_MS
 }
 
 function safeHexEqual(a, b) {
@@ -85,6 +96,11 @@ export function validateSignature(onInvalid) {
 
         const { timestamp, signatures } = parseSignatureHeader(signatureHeader)
         if (!timestamp || signatures.length === 0) {
+            return onInvalid(res, { status: 401, message: 'Invalid signature' })
+        }
+
+        if (!isTimestampWithinTolerance(timestamp)) {
+            logger.warn('Rejected MarketPay callback with expired or invalid signature timestamp', {timestamp})
             return onInvalid(res, { status: 401, message: 'Invalid signature' })
         }
 
