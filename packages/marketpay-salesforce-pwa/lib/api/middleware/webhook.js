@@ -155,7 +155,7 @@ export async function paymentNotificationHandler(req, res) {
             message: error.message
         })
         const status = error.status >= 400 && error.status < 500 ? error.status : 502
-        return res.status(status).json({message: error.message || 'Failed to process notification'})
+        return res.status(status).json({message: 'Failed to process notification'})
     }
 
     return res.status(200).json({message: 'Acknowledged'})
