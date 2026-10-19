@@ -1,39 +1,36 @@
 import {config} from './config.js'
 
-let cachedShopperToken = null
-let shopperTokenExpiry = 0
+let cachedAdminToken = null
+let adminTokenExpiry = 0
 
 /**
- * Requests a guest shopper token from SLAS via the `client_credentials` grant
- * of the private SLAS client, caching it until shortly before it expires.
+ * Requests an Account Manager (Business Manager) admin OAuth token via the
+ * `client_credentials` grant, caching it until shortly before it expires.
  *
- * Requires a private SLAS client (COMMERCE_API_CLIENT_ID /
- * PWA_KIT_SLAS_CLIENT_SECRET) whose scopes include the custom API's scope and
- * whose channels include COMMERCE_API_SITE_ID.
+ * Requires an Account Manager API client (ADMIN_CLIENT_ID_PRIVATE /
+ * ADMIN_CLIENT_SECRET) granted the SALESFORCE_COMMERCE_API scope for
+ * SFCC_REALM_AND_INSTANCE.
  */
-async function getShopperAccessToken() {
-    if (cachedShopperToken && Date.now() < shopperTokenExpiry) {
-        return cachedShopperToken
+async function getAdminAccessToken() {
+    if (cachedAdminToken && Date.now() < adminTokenExpiry) {
+        return cachedAdminToken
     }
 
-    const {slasClientId, slasClientSecret} = config
-    if (!slasClientId || !slasClientSecret) {
-        throw new Error('COMMERCE_API_CLIENT_ID / PWA_KIT_SLAS_CLIENT_SECRET are not configured')
+    const {adminClientId, adminClientSecret} = config
+    if (!adminClientId || !adminClientSecret) {
+        throw new Error('ADMIN_CLIENT_ID_PRIVATE / ADMIN_CLIENT_SECRET are not configured')
     }
 
-    const basicAuth = Buffer.from(`${slasClientId}:${slasClientSecret}`).toString('base64')
-    const tokenUrl = `https://${config.commerceApiShortCode}.api.commercecloud.salesforce.com/shopper/auth/v1/organizations/${config.commerceApiOrgId}/oauth2/token`
+    const basicAuth = Buffer.from(`${adminClientId}:${adminClientSecret}`).toString('base64')
+    const scope = `SALESFORCE_COMMERCE_API:${config.sfccRealmAndInstance} ${config.sfccOAuthScopes}`
 
-    const response = await fetch(tokenUrl, {
+    const response = await fetch(config.adminTokenUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             authorization: `Basic ${basicAuth}`
         },
-        body: new URLSearchParams({
-            grant_type: 'client_credentials',
-            channel_id: config.commerceApiSiteId
-        })
+        body: new URLSearchParams({scope})
     })
 
     if (!response.ok) {
@@ -42,10 +39,10 @@ async function getShopperAccessToken() {
     }
 
     const {access_token: accessToken, expires_in: expiresIn} = await response.json()
-    cachedShopperToken = accessToken
-    shopperTokenExpiry = Date.now() + (expiresIn - 60) * 1000
+    cachedAdminToken = accessToken
+    adminTokenExpiry = Date.now() + (expiresIn - 60) * 1000
 
-    return cachedShopperToken
+    return cachedAdminToken
 }
 
 /**
@@ -53,7 +50,7 @@ async function getShopperAccessToken() {
  * endpoint (marketpay/v1/organizations/{organizationId}/{endpoint}).
  */
 export async function forwardToSCAPI(req, endpoint) {
-    const accessToken = await getShopperAccessToken()
+    const accessToken = await getAdminAccessToken()
     const url = `https://${config.commerceApiShortCode}.api.commercecloud.salesforce.com/custom/marketpay/v1/organizations/${config.commerceApiOrgId}/${endpoint}?siteId=${config.commerceApiSiteId}`
 
     const response = await fetch(url, {

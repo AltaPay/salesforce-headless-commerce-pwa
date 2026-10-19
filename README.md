@@ -25,6 +25,10 @@ Make sure you have a `.env` file. You can look at `.env.example` for inspiration
 
 To handle MarketPay's webhook/callback requests (see [MarketPay Webhook Callbacks](#marketpay-webhook-callbacks) below), also set:
 
+- ADMIN_CLIENT_ID_PRIVATE
+- ADMIN_CLIENT_SECRET
+- SFCC_REALM_AND_INSTANCE
+- SFCC_OAUTH_SCOPES
 - MARKETPAY_DEFAULT_ERROR_URL
 - MARKETPAY_KNOWN_IP_PROTECTION
 - MARKETPAY_ALLOWED_IPS (optional)
@@ -67,7 +71,9 @@ Env vars used for this:
 
 | Variable | Description |
 |----------|-------------|
-| **SLAS Client ID and Secret** (`COMMERCE_API_CLIENT_ID` / `PWA_KIT_SLAS_CLIENT_SECRET`) | Private SLAS client credentials, used to mint the client-credentials token this app presents to SCAPI when forwarding MarketPay webhooks. |
+| `ADMIN_CLIENT_ID_PRIVATE` / `ADMIN_CLIENT_SECRET` | Account Manager API client credentials, used to get the token this app presents to SCAPI when forwarding MarketPay webhooks. The client needs the `c_marketpaycallbacks_rw` scope. |
+| `SFCC_REALM_AND_INSTANCE` | Realm and instance the token is issued for. |
+| `SFCC_OAUTH_SCOPES` | Space-separated scopes requested for that token, e.g. `c_marketpaycallbacks_rw sfcc.custom-apis`. |
 | `MARKETPAY_DEFAULT_ERROR_URL` | Fallback redirect if a callback can't be processed (missing/invalid signature, SCAPI unreachable, order not found, etc.). |
 | `MARKETPAY_KNOWN_IP_PROTECTION` | Restricts `/webhooks/marketpay/*` to MarketPay's known IP ranges. Defaults to `true`; set to `"false"` to disable (e.g. behind a firewall/proxy that obscures the real caller IP). |
 | `MARKETPAY_ALLOWED_IPS` | Optional comma-separated list of IPs/CIDR ranges, overriding the built-in default allowlist. |
