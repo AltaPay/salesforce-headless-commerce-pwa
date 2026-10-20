@@ -1,5 +1,5 @@
 import {useState, useCallback} from 'react'
-import {constructMarketPayPaymentInstrument} from '../utils/payment'
+import {constructMarketPayPaymentInstrument} from '../utils/payment.js'
 
 /**
  * Custom hook that encapsulates MarketPay payment submission logic.

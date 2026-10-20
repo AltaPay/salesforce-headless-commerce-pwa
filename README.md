@@ -21,6 +21,20 @@ Make sure you have a `.env` file. You can look at `.env.example` for inspiration
 - SCAPI_URL
 - OCAPI_URL
 - SFCC_HOST
+- PWA_KIT_SLAS_CLIENT_SECRET
+
+To handle MarketPay's webhook/callback requests (see [MarketPay Webhook Callbacks](#marketpay-webhook-callbacks) below), also set:
+
+- ADMIN_CLIENT_ID_PRIVATE
+- ADMIN_CLIENT_SECRET
+- SFCC_REALM_AND_INSTANCE
+- SFCC_OAUTH_SCOPES
+- MARKETPAY_DEFAULT_ERROR_URL
+- MARKETPAY_KNOWN_IP_PROTECTION
+- MARKETPAY_ALLOWED_IPS (optional)
+- MARKETPAY_SIGNATURE_PROTECTION
+- MARKETPAY_CALLBACK_SECRET
+- MARKETPAY_TRUSTED_PROXY_HOPS (required on deployments behind a proxy/CDN, see below)
 
 ### Run the app
 
@@ -41,6 +55,58 @@ To start your web server for local development:
     Now that the development server is running, you can open a browser and preview your commerce app:
 
     Go to http://localhost:3000/
+
+## MarketPay Webhook Callbacks
+
+This app registers the server-side routes that MarketPay calls back to directly: payment notifications, success/failure redirects, and the hosted payment form's styling page.
+
+| Route | Purpose |
+|-------|---------|
+| `POST /webhooks/marketpay/payment-notification` | Server-to-server payment status notifications from MarketPay. |
+| `POST /webhooks/marketpay/payment-success` | Browser/app redirect after a successful payment; forwards to SCAPI, then redirects the shopper. |
+| `POST /webhooks/marketpay/payment-failed` | Browser/app redirect after a failed payment; forwards to SCAPI, then redirects the shopper. |
+| `POST /marketpay/callback-form` | Renders the styling page for MarketPay's hosted payment form. |
+
+Env vars used for this:
+
+| Variable | Description |
+|----------|-------------|
+| `ADMIN_CLIENT_ID_PRIVATE` / `ADMIN_CLIENT_SECRET` | Account Manager API client credentials, used to get the token this app presents to SCAPI when forwarding MarketPay webhooks. The client needs the `c_marketpaycallbacks_rw` scope. |
+| `SFCC_REALM_AND_INSTANCE` | Realm and instance the token is issued for. |
+| `SFCC_OAUTH_SCOPES` | Space-separated scopes requested for that token, e.g. `c_marketpaycallbacks_rw sfcc.custom-apis`. |
+| `MARKETPAY_DEFAULT_ERROR_URL` | Fallback redirect if a callback can't be processed (missing/invalid signature, SCAPI unreachable, order not found, etc.). |
+| `MARKETPAY_KNOWN_IP_PROTECTION` | Restricts `/webhooks/marketpay/*` to MarketPay's known IP ranges. Defaults to `true`; set to `"false"` to disable (e.g. behind a firewall/proxy that obscures the real caller IP). |
+| `MARKETPAY_ALLOWED_IPS` | Optional comma-separated list of IPs/CIDR ranges, overriding the built-in default allowlist. |
+| `MARKETPAY_SIGNATURE_PROTECTION` | Verifies that incoming callbacks on `/webhooks/marketpay/*` are genuinely from MarketPay. Defaults to `true`; set to `"false"` to disable. When enabled, `MARKETPAY_CALLBACK_SECRET` must also be set, or every callback is rejected. |
+| `MARKETPAY_CALLBACK_SECRET` | Shared secret used to verify that incoming callbacks are genuinely from MarketPay. Must match the secret configured on the MarketPay side — see [Callback Security setup](https://documentation.altapay.com/v2/Checkout-API/CallbackSecurity/). |
+| `MARKETPAY_TRUSTED_PROXY_HOPS` | Number of trusted proxies (CDN, load balancer) in front of this app, used to resolve the real caller IP for `MARKETPAY_KNOWN_IP_PROTECTION`. Must match your proxy chain exactly. Leave unset when there is no proxy (e.g. local development). Apps importing the module must set `trust proxy` themselves, as `ssr.js` does here. |
+
+On the SFCC side, the `int_marketpay_headless` cartridge's **MRT Base URL for Callbacks** site preference (`marketPayCallbackBaseURL`) must point at this app's deployed origin so MarketPay's callback URLs resolve here.
+
+### Using the module in your own app
+
+If you use `marketpay-salesforce-pwa` in your own app, add this to your `ssr.js`:
+
+```js
+import express from 'express'
+import {registerMarketPayCallbacks} from 'marketpay-salesforce-pwa/dist/api/routes/index.js'
+
+const {handler} = runtime.createHandler(options, (app) => {
+    // Real caller IP behind proxies (known IP protection)
+    const hops = parseInt(process.env.MARKETPAY_TRUSTED_PROXY_HOPS, 10)
+    if (Number.isInteger(hops) && hops > 0) app.set('trust proxy', hops)
+
+    // Raw webhook body for signature verification, before any other body parser
+    const rawBody = (req, res, buf) => (req.rawBody = buf.toString('utf8'))
+    app.use('/webhooks/marketpay', express.json({verify: rawBody}), express.urlencoded({extended: true, verify: rawBody}))
+    app.use(express.json())
+    app.use(express.urlencoded({extended: true}))
+
+    registerMarketPayCallbacks(app, runtime)
+})
+```
+
+Without the raw body capture, every callback is rejected with `Missing request body`.
 
 ## Changelog
 

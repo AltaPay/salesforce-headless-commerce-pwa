@@ -16,6 +16,7 @@ import {getRuntime} from '@salesforce/pwa-kit-runtime/ssr/server/express'
 import {defaultPwaKitSecurityHeaders} from '@salesforce/pwa-kit-runtime/utils/middleware'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
+import {registerMarketPayCallbacks} from 'marketpay-salesforce-pwa/dist/api/routes/index.js'
 
 const config = getConfig()
 
@@ -331,6 +332,23 @@ export async function jwksCaching(req, res, options) {
 }
 
 const {handler} = runtime.createHandler(options, (app) => {
+    // Number of trusted reverse proxies in front of this app, so req.ip resolves to the real
+    // caller (used by MarketPay's known IP protection). Left unset, req.ip is the nearest peer.
+    const trustedProxyHops = parseInt(process.env.MARKETPAY_TRUSTED_PROXY_HOPS, 10)
+    if (Number.isInteger(trustedProxyHops) && trustedProxyHops > 0) {
+        app.set('trust proxy', trustedProxyHops)
+    }
+
+    // The raw body is only kept for MarketPay's webhooks, which need it to verify the callback
+    // signature. These parsers run first, so the global ones below skip those requests.
+    const rawBody = (req, res, buf) => {
+        req.rawBody = buf.toString('utf8')
+    }
+    app.use(
+        '/webhooks/marketpay',
+        express.json({verify: rawBody}),
+        express.urlencoded({extended: true, verify: rawBody})
+    )
     app.use(express.json()) // To parse JSON payloads
     app.use(express.urlencoded({extended: true}))
     // Set default HTTP security headers required by PWA Kit
@@ -425,6 +443,10 @@ const {handler} = runtime.createHandler(options, (app) => {
     app.get('/favicon.ico', runtime.serveStaticFile('static/ico/favicon.ico'))
 
     app.get('/worker.js(.map)?', runtime.serveServiceWorker)
+
+    // MarketPay webhook callbacks (e.g. /webhooks/marketpay/marketpay-notification)
+    registerMarketPayCallbacks(app, runtime)
+
     app.get('*', runtime.render)
 })
 // SSR requires that we export a single handler function called 'get', that
