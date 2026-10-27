@@ -73,7 +73,7 @@ Env vars used for this:
 |----------|-------------|
 | `COMMERCE_API_SHORT_CODE` / `COMMERCE_API_ORG_ID` / `COMMERCE_API_SITE_ID` | Used to build the SCAPI custom endpoint URL the callbacks are forwarded to. |
 | `ADMIN_CLIENT_ID_PRIVATE` / `ADMIN_CLIENT_SECRET` | Account Manager API client credentials, used to get the token this app presents to SCAPI when forwarding MarketPay webhooks. The client needs the `c_marketpaycallbacks_rw` scope. |
-| `SFCC_REALM_AND_INSTANCE` | Realm and instance the token is issued for, e.g. `bknt_005`. |
+| `SFCC_REALM_AND_INSTANCE` | Realm and instance the token is issued for. |
 | `SFCC_OAUTH_SCOPES` | Space-separated scopes requested for that token, e.g. `c_marketpaycallbacks_rw sfcc.custom-apis`. |
 | `MARKETPAY_DEFAULT_ERROR_URL` | Fallback redirect if a callback can't be processed (missing/invalid signature, SCAPI unreachable, order not found, etc.). |
 | `MARKETPAY_KNOWN_IP_PROTECTION` | Restricts `/webhooks/marketpay/*` to MarketPay's known IP ranges. Defaults to `true`; set to `"false"` to disable (e.g. behind a firewall/proxy that obscures the real caller IP). |
