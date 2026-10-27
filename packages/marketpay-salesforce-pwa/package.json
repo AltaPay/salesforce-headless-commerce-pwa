@@ -1,8 +1,7 @@
 {
   "name": "marketpay-salesforce-pwa",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "MarketPay payment integration for Salesforce PWA Kit",
-  "main": "dist/index.js",
   "keywords": [
     "marketpay",
     "salesforce",
@@ -10,10 +9,27 @@
     "checkout",
     "payment"
   ],
-  "license": "ISC",
+  "author": "MarketPay",
+  "license": "MIT",
+  "homepage": "https://github.com/AltaPay/salesforce-headless-commerce-pwa#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AltaPay/salesforce-headless-commerce-pwa.git",
+    "directory": "packages/marketpay-salesforce-pwa"
+  },
+  "bugs": {
+    "url": "https://github.com/AltaPay/salesforce-headless-commerce-pwa/issues"
+  },
+  "main": "dist/app/index.js",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "clean": "node -e \"require('fs').rmSync('dist', {recursive: true, force: true})\"",
-    "build": "npm run clean && babel lib -d dist --extensions \".js\""
+    "build-dev": "npm run clean && webpack --mode development",
+    "build-prod": "npm run clean && webpack --mode production",
+    "build": "npm run build-prod",
+    "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
     "react": "^18.0.0"
@@ -22,8 +38,15 @@
     "@babel/runtime": "^7.24.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.24.0",
     "@babel/core": "^7.24.0",
-    "@babel/preset-env": "^7.24.0"
-  }
+    "@babel/preset-env": "^7.24.0",
+    "babel-loader": "^9.2.1",
+    "webpack": "^5.112.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
 }
