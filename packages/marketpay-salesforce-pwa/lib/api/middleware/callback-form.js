@@ -28,8 +28,6 @@ export function callbackFormHandler(req, res) {
   const title = 'Payment'
 
   const html = `<!DOCTYPE html>
-<isanalyticsoff/>
-<iscomment>MarketPay Payment Gateway Template</iscomment>
 <html lang="${languageCode}">
   <head>
     <meta charset="utf-8">
@@ -356,7 +354,7 @@ export function callbackFormHandler(req, res) {
     <div class="content-wrapper ${formTemplateClass}">
       <div class="payment-form-wrapper">
         <form id="PensioPaymentForm">
-          <iscomment>All content in here will be replaced by the actual payment form</iscomment>
+          <!-- All content in here will be replaced by the actual payment form -->
         </form>
       </div>
     </div>
